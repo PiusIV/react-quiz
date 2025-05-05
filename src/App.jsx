@@ -76,7 +76,7 @@ function App() {
   }, []);
 
   return (
-    <div className="grid max-w-full h-screen overflow-hidden mx-auto place-content-center py-12 bg-gray-900 text-white bg-cover">
+    <div className="grid max-w-full h-screen mx-auto place-content-center py-12 bg-gray-900 text-white bg-cover">
       <Header />
       <Main>
         {status === "loading" && <Loader />}
