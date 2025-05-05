@@ -1,4 +1,4 @@
-import { useEffect, useReducer } from "react";
+import { useReducer } from "react";
 import Header from "./components/Header";
 import Main from "./components/Main";
 import Loader from "./components/Loader";
@@ -8,6 +8,7 @@ import Questions from "./components/Questions";
 import NextButton from "./components/NextButton";
 import Progress from "./components/Progress";
 import FinishScreen from "./components/FinishScreen";
+import quizQuestions from "../public/quizQuestions";
 
 function reducer(state, action) {
   switch (action.type) {
@@ -39,8 +40,8 @@ function reducer(state, action) {
 }
 
 const initialState = {
-  questions: [],
-  status: "loading",
+  questions: quizQuestions,
+  status: "ready",
   index: 0,
   answer: null,
   points: 0,
@@ -57,23 +58,25 @@ function App() {
     0
   );
 
-  useEffect(() => {
-    async function getQuiz() {
-      try {
-        dispatch({ type: "dataLoading" });
-        const res = await fetch("http://localhost:8000/questions");
-        if (!res.ok) throw new Error("failed to fetch");
+  // ! Removed cos server isn't working in production
 
-        const data = await res.json();
-        console.log(data);
-        dispatch({ type: "dataReceived", payload: data });
-      } catch (err) {
-        console.error(err.message);
-        dispatch({ type: "dataError" });
-      }
-    }
-    getQuiz();
-  }, []);
+  // useEffect(() => {
+  //   async function getQuiz() {
+  //     try {
+  //       dispatch({ type: "dataLoading" });
+  //       const res = await fetch("http://localhost:8000/questions");
+  //       if (!res.ok) throw new Error("failed to fetch");
+
+  //       const data = await res.json();
+  //       console.log(data);
+  //       dispatch({ type: "dataReceived", payload: data });
+  //     } catch (err) {
+  //       console.error(err.message);
+  //       dispatch({ type: "dataError" });
+  //     }
+  //   }
+  //   getQuiz();
+  // }, []);
 
   return (
     <div className="grid max-w-full h-screen mx-auto place-content-center py-12 bg-gray-900 text-white bg-cover">
