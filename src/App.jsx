@@ -1,8 +1,8 @@
 import { useReducer } from "react";
 import Header from "./components/Header";
 import Main from "./components/Main";
-import Loader from "./components/Loader";
-import Error from "./components/Error";
+// import Loader from "./components/Loader";
+// import Error from "./components/Error";
 import StartScreen from "./components/StartScreen";
 import Questions from "./components/Questions";
 import NextButton from "./components/NextButton";
@@ -25,20 +25,21 @@ const SECS_PER_QUESTION = 20;
 
 function reducer(state, action) {
   switch (action.type) {
+    // case "dataFailed":
+    //   return { ...state, status: "error" };
+    // case "dataLoading":
+    //   return { ...state, status: "loading" };
     case "dataReceived":
       return { ...state, questions: action.payload, status: "ready" };
-    case "dataFailed":
-      return { ...state, status: "error" };
-    case "dataLoading":
-      return { ...state, status: "loading" };
     case "start":
       return {
         ...state,
         status: "active",
         secondsRemaining: state.questions.length * SECS_PER_QUESTION,
       };
-    case "newAnswer":
+    case "newAnswer": {
       const question = state.questions.at(state.index);
+
       return {
         ...state,
         answer: action.payload,
@@ -47,12 +48,19 @@ function reducer(state, action) {
             ? state.points + question.points
             : state.points,
       };
+    }
     case "nextQuestion":
       return { ...state, index: state.index + 1, answer: null };
     case "finishedQuestions":
       return { ...state, status: "finish" };
     case "restart":
       return { ...initialState, questions: state.questions, status: "ready" };
+    case "tick":
+      return {
+        ...state,
+        secondsRemaining: state.secondsRemaining - 1,
+        status: state.secondsRemaining === 0 ? "finish" : state.status,
+      };
     default:
       throw new Error("Action unknown");
   }
@@ -61,7 +69,7 @@ function reducer(state, action) {
 function App() {
   const [state, dispatch] = useReducer(reducer, initialState);
 
-  const { questions, status, index, answer, points } = state;
+  const { questions, status, index, answer, points, secondsRemaining } = state;
 
   const numQuestions = questions.length;
   const maxPossiblePoints = questions.reduce(
@@ -70,7 +78,6 @@ function App() {
   );
 
   // ! Removed cos server isn't working in production
-
   // useEffect(() => {
   //   async function getQuiz() {
   //     try {
@@ -93,8 +100,8 @@ function App() {
     <div className="grid max-w-full h-screen mx-auto place-content-center py-12 bg-gray-900 text-white bg-cover">
       <Header />
       <Main>
-        {status === "loading" && <Loader />}
-        {status === "error" && <Error />}
+        {/* {status === "loading" && <Loader />}
+        {status === "error" && <Error />} */}
         {status === "ready" && (
           <StartScreen numQuestions={numQuestions} dispatch={dispatch} />
         )}
